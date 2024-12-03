@@ -61,9 +61,9 @@ def faster_endgame_utility(state, maximizer_player_num):
     if state.endgame_winner() == 0:
         return 0
     elif state.endgame_winner() == maximizer_player_num:
-        return 1000 - state.path_length 
+        return 1000 + (1/state.path_length)
     else:
-        return state.path_length - 1000
+        return -(1000 +(1/state.path_length))
 
 
 def always_zero(state, maximizer_player_num):
