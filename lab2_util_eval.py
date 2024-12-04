@@ -58,13 +58,14 @@ def faster_endgame_utility(state, maximizer_player_num):
     returning larger absolute scores for winning/losing sooner.
     This incentivizes winning more quickly, and losing later.
     """
-    if state.endgame_winner() == 0:
+    if state.endgame_winner() == 0:  # Tie game
         return 0
-    elif state.endgame_winner() == maximizer_player_num:
-        return 1000 + (1/state.path_length)
-    else:
-        return -(1000 +(1/state.path_length))
-
+    elif state.endgame_winner() == maximizer_player_num:  # Maximizer wins
+     
+        return 1000 + (1 / (state.path_length + 1)) 
+    else:  # Minimizer wins
+       
+        return -(1000 + (1 / (state.path_length + 1)))  
 
 def always_zero(state, maximizer_player_num):
     """ Always returns zero.

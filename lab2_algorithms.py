@@ -222,6 +222,7 @@ def MaximizingDFS(initial_state,
                 v = child_util
                 maxAction = posAction
                 best_leaf_node = leaf_node
+            terminated = state_callback_fn(state,child_util ) or terminated
     
         return maxAction, best_leaf_node, v, terminated
 
@@ -268,15 +269,22 @@ def MinimaxSearch(initial_state,
         v = float(-INF)
         maxAction = None
         best_leaf_node = None
-        for posAction in (state.get_all_actions()):
+
+        # Loop over all possible actions
+        for posAction in state.get_all_actions():
             child = state.generate_next_state(posAction)
-            child_action, leaf_node, exp_util, terminated = Minimizing_helper(child)
-          
-            if max(v, eval_fn(leaf_node, initial_state.get_current_player())) != v:
-                v =  eval_fn(leaf_node, initial_state.get_current_player())
-                maxAction = posAction   
+            _, leaf_node, child_util, terminated = Minimizing_helper(child)
+        
+        # If the utility of this path is better than the current best, update the action
+            if child_util > v:
+                v = child_util
+                maxAction = posAction
                 best_leaf_node = leaf_node
-        return maxAction, best_leaf_node, exp_util, terminated
+            terminated = state_callback_fn(state,child_util) or terminated
+    
+        return maxAction, best_leaf_node, v, terminated
+
+     
 
 
 
@@ -303,15 +311,21 @@ def MinimaxSearch(initial_state,
         v = float(INF)
         minAction = None
         best_leaf_node = None
-        for posAction in (state.get_all_actions()):
+
+        # Loop over all possible actions
+        for posAction in state.get_all_actions():
             child = state.generate_next_state(posAction)
-            child_action, leaf_node, exp_util, terminated = Maximizing_helper(child)
-            if min(v, eval_fn(leaf_node, initial_state.get_current_player())) != v:
-                v =  eval_fn(leaf_node, initial_state.get_current_player())
-                minAction = posAction 
-                best_leaf_node  = leaf_node
-                
-        return minAction, best_leaf_node, exp_util, terminated
+            _, leaf_node, child_util, terminated = Maximizing_helper(child)
+        
+        # If the utility of this path is better than the current best, update the action
+            if child_util < v:
+                v = child_util
+                minAction = posAction
+                best_leaf_node = leaf_node
+            terminated = state_callback_fn(state,child_util ) or terminated
+    
+        return minAction, best_leaf_node, v, terminated
+
     
     return Maximizing_helper(initial_state)
     
