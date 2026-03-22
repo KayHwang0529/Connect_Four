@@ -132,8 +132,23 @@ def win_paths_eval_tictactoe(state, maximizer_player_num):
     where M(n) is the total of Maximizer's possible winning lines
     O(n) is the total of Minimizer's possible winning lines.
     """
-    raise NotImplementedError
-    return 0
+    def is_winning_line(line, player_num):
+        return all(cell == player_num or cell == 0 for cell in line)
+    
+    def is_losing_line(line, player_num):
+        return not any(cell in [player_num] for cell in line)
+    
+    board_size = state.num_rows
+    # get the horizontal vert and diag lines (possible wins)
+    lines = [state.board_array[r] for r in range(board_size)] # all the rows
+    lines += [[state.board_array[r][c] for r in range(board_size)] for c in range(board_size)] # all the columns
+    lines += [[state.board_array[0][0], state.board_array[1][1], state.board_array[2][2]]] # diagonal down right
+    lines += [[state.board_array[0][2], state.board_array[1][1], state.board_array[2][0]]] # diagonal down left
+    
+    maximizer_lines = [line for line in lines if is_winning_line(line, maximizer_player_num)]
+    minimizer_lines = [line for line in lines if is_losing_line(line, maximizer_player_num)]
+    
+    return len(maximizer_lines) - len(minimizer_lines)
 
 tictactoe_functions = {
     "endgame_util_fn_dict" : {"basic": basic_endgame_utility,

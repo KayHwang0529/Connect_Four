@@ -11,6 +11,8 @@ class TicTacToeGameState(GameStateNode):
     num_cols = 3  # board width
     board_str = {0: "_", 1 : "X", 2: "0"}
 
+    def get_rows(self):
+        return self.num_rows
     """
     A 'static' method that reads data from a text file and returns
     a GameStateNode which is an initial state.
@@ -221,3 +223,4 @@ class TicTacToeGameState(GameStateNode):
 
     def get_piece_at(self, row, col):
         return self.board_array[row][col]
+

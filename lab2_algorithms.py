@@ -1,6 +1,7 @@
 # Lab 2: Games (Connect-4, Roomba Race)
 # Name(s):
 # Email(s):
+
 import random # choice, shuffle methods
 import math # optional, remove later
 from time import time
@@ -352,8 +353,62 @@ def ExpectimaxSearch(initial_state,
     Since there is no single leaf node that represents the expected outcome,
     return None for the second return value.
     """
-    raise NotImplementedError
-    return None, None, 0, False
+    
+    def expectimax_helper(state, depth, is_max):
+        counter['num_nodes_seen'] += 1
+
+        #Check for terminal state or cutoff depth
+        if state.is_endgame_state():
+            counter['num_endgame_evals'] += 1
+            endgame_util = util_fn(state, initial_state.get_current_player())
+            terminated = state_callback_fn(state, endgame_util)
+            return None, state, endgame_util, terminated
+
+        if depth == 0:
+            counter['num_heuristic_evals'] += 1
+            heuristic_eval = eval_fn(state, initial_state.get_current_player())
+            terminated = state_callback_fn(state, heuristic_eval)
+            return None, state, heuristic_eval, terminated
+    
+        if is_max:
+            random_move_order = False
+            max_value = float('-inf')
+            max_action = None
+            best_leaf_node = None
+            for posAction in state.get_all_actions():
+                child = state.generate_next_state(posAction)
+                child_action, leaf_node, child_util, terminated = expectimax_helper(child, depth - 1, False)
+                if child_util > max_value:
+                    max_value = child_util
+                    max_action = posAction
+                    best_leaf_node = leaf_node
+            terminated = state_callback_fn(state,child_util) or terminated
+            return max_action, best_leaf_node, max_value, False
+
+
+        else:
+            random_move_order = True
+            v = 0
+            children = []
+            for pos_action in state.get_all_actions():
+                child = state.generate_next_state(pos_action)
+                children.append(child)
+            if not children:
+                return None, state, 0, False
+            if random_move_order:
+                random.shuffle(children)
+            probability = 1 / len(children) if children else 0
+            for child in children:
+                child_action, leaf_node, child_util, terminated = expectimax_helper(child, depth - 1, True)
+                v += probability * child_util
+                if state_callback_fn(child, v):  # GUI callback check
+                    return None, child, v, True
+            return None, state, v, False
+
+        
+    return expectimax_helper(initial_state, cutoff, True)
+   
+
 
 
 ### Part 2: Pruning the tree - Transposition Tables, Alpha-Beta Pruning, Move ordering #################################################
