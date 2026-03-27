@@ -1,0 +1,9 @@
+- `gamestatenode.py`: Abstract base class/API used by all games
+- `lab2_algorithms.py`: Search algorithms (some starter, some TODO)
+- `lab2_util_eval.py`: Endgame utility and heuristic evaluation functions
+- `game_playing_agents.py`: Human and AI agent wrappers
+- `lab2_play_text.py`: Play games in terminal
+- `lab2_play_gui.py`: Play games in GUI
+- `lab2_test_gui.py`: GUI for algorithm testing/visualization
+- `*_gamestate.py`: Game-specific state representations
+- `initial_states/`: Sample starting positions for each game
